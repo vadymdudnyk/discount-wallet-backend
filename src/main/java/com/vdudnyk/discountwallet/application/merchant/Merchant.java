@@ -17,6 +17,8 @@ public class Merchant {
     private Long id;
 
     private String businessName;
+    private String city;
+    private String address;
 
     @OneToMany
     private Set<Code> codes;

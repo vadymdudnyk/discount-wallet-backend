@@ -1,8 +1,9 @@
 package com.vdudnyk.discountwallet.application.user;
 
 import com.vdudnyk.discountwallet.application.shared.ApiException;
-import com.vdudnyk.discountwallet.application.user.shared.RegisterWithPhoneNumberRequest;
 import com.vdudnyk.discountwallet.application.user.shared.LoginRequest;
+import com.vdudnyk.discountwallet.application.user.shared.RegisterAsMerchantRequest;
+import com.vdudnyk.discountwallet.application.user.shared.RegisterAsUserRequest;
 import com.vdudnyk.discountwallet.application.user.shared.TokenResponse;
 import com.vdudnyk.discountwallet.infrastructure.config.JwtTokenProvider;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.CollectionHelper.asSet;
@@ -29,19 +29,39 @@ class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
 
-    void initRegistrationWithPhoneNumber(RegisterWithPhoneNumberRequest registerWithPhoneNumberRequest) {
-        String phoneNumber = registerWithPhoneNumberRequest.getPhoneNumber();
-        Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(phoneNumber);
-        if(byPhoneNumber.isPresent()) {
-            throw new ApiException("Phone number already registered");
+    void registerAsUser(RegisterAsUserRequest registerAsUserRequest) {
+        Optional<User> byEmail = userRepository.findByEmail(registerAsUserRequest.getEmail());
+        Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(registerAsUserRequest.getPhoneNumber());
+        if (byEmail.isPresent() || byPhoneNumber.isPresent()) {
+            throw new ApiException("Provided email or phone number is already taken");
         }
+
         User user = new User();
-        user.setPhoneNumber(registerWithPhoneNumberRequest.getPhoneNumber());
+        user.setPhoneNumber(registerAsUserRequest.getPhoneNumber());
+        user.setEmail(registerAsUserRequest.getEmail());
         user.setIsVerified(false);
-        user.setOneTimePassword(passwordEncoder.encode("9999"));
+        user.setPassword(passwordEncoder.encode(registerAsUserRequest.getPassword()));
         user.setRoles(asSet(roleRepository.getRoleByName("ROLE_USER")));
         userRepository.save(user);
-        log.info("Init registration with phone number: {}", phoneNumber);
+        log.info("Registration with phone number: {}, email: {}", user.getPhoneNumber(), user.getEmail());
+    }
+
+    void registerAsMerchant(RegisterAsMerchantRequest registerAsMerchantRequest) {
+        Optional<User> byEmail = userRepository.findByEmail(registerAsMerchantRequest.getEmail());
+        Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(registerAsMerchantRequest.getPhoneNumber());
+        if (byEmail.isPresent() || byPhoneNumber.isPresent()) {
+            throw new ApiException("Provided email or phone number is already taken");
+        }
+
+        User user = new User();
+        user.setPhoneNumber(registerAsMerchantRequest.getPhoneNumber());
+        user.setEmail(registerAsMerchantRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(registerAsMerchantRequest.getPassword()));
+        user.setIsVerified(false);
+        user.setRoles(asSet(roleRepository.getRoleByName("ROLE_MERCHANT")));
+        userRepository.save(user);
+        log.info("Registration with phone number: {}, email: {}", user.getPhoneNumber(), user.getEmail());
+
     }
 
     TokenResponse authenticateUserByOneTimePassword(LoginRequest loginRequest) {
@@ -55,9 +75,5 @@ class UserService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwtToken = tokenProvider.generateToken(authentication);
         return new TokenResponse(jwtToken);
-    }
-
-    Optional<User> getUserByUsername(String phoneNumber) {
-        return userRepository.findByPhoneNumber(phoneNumber);
     }
 }

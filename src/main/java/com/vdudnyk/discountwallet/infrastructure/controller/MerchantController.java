@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController(value = "/merchant")
 public class MerchantController {
     @PostMapping()
-    ResponseEntity<String> test(
-
-                               ) {
+    ResponseEntity<String> test() {
         return ResponseEntity.ok("SUCCESS");
     }
 }

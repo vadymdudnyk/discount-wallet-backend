@@ -1,7 +1,8 @@
 package com.vdudnyk.discountwallet.application.user;
 
 import com.vdudnyk.discountwallet.application.user.shared.LoginRequest;
-import com.vdudnyk.discountwallet.application.user.shared.RegisterWithPhoneNumberRequest;
+import com.vdudnyk.discountwallet.application.user.shared.RegisterAsMerchantRequest;
+import com.vdudnyk.discountwallet.application.user.shared.RegisterAsUserRequest;
 import com.vdudnyk.discountwallet.application.user.shared.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,10 +12,15 @@ import org.springframework.stereotype.Service;
 public class UserFacade {
     private final UserService userService;
 
-    public void initRegistrationByPhoneNumber(RegisterWithPhoneNumberRequest request) {
-        userService.initRegistrationWithPhoneNumber(request);
+    public void registerAsUser(RegisterAsUserRequest request) {
+        userService.registerAsUser(request);
     }
-    public TokenResponse authenticateByPhoneNumberAndOTP(LoginRequest request) {
+
+    public void registerAsMerchant(RegisterAsMerchantRequest registerAsMerchantRequest) {
+        userService.registerAsMerchant(registerAsMerchantRequest);
+    }
+
+    public TokenResponse authenticate(LoginRequest request) {
         return userService.authenticateUserByOneTimePassword(request);
     }
 }

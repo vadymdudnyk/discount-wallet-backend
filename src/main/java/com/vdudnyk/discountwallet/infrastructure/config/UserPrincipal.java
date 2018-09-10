@@ -29,14 +29,15 @@ public class UserPrincipal implements UserDetails {
     }
 
     public static UserPrincipal create(User user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
-                                                                                  new SimpleGrantedAuthority(role.getName())
-                                                                         ).collect(Collectors.toList());
-
+        List<GrantedAuthority> authorities = user
+                .getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
         return new UserPrincipal(
                 user.getId(),
                 user.getPhoneNumber(),
-                user.getOneTimePassword(),
+                user.getPassword(),
                 authorities
         );
     }

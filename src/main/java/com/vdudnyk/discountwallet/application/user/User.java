@@ -17,7 +17,7 @@ public class User {
     private String email;
     private String phoneNumber;
 
-    private String oneTimePassword;
+    private String password;
     private String firstName;
     private String lastName;
 

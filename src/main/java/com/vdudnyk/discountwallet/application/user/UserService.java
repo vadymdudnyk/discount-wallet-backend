@@ -1,7 +1,7 @@
 package com.vdudnyk.discountwallet.application.user;
 
 import com.vdudnyk.discountwallet.application.shared.ApiException;
-import com.vdudnyk.discountwallet.application.user.shared.LoginRequest;
+import com.vdudnyk.discountwallet.application.user.shared.AuthenticateRequest;
 import com.vdudnyk.discountwallet.application.user.shared.RegisterAsMerchantRequest;
 import com.vdudnyk.discountwallet.application.user.shared.RegisterAsUserRequest;
 import com.vdudnyk.discountwallet.application.user.shared.TokenResponse;
@@ -46,7 +46,7 @@ class UserService {
         log.info("Registration with phone number: {}, email: {}", user.getPhoneNumber(), user.getEmail());
     }
 
-    void registerAsMerchant(RegisterAsMerchantRequest registerAsMerchantRequest) {
+    TokenResponse registerAsMerchant(RegisterAsMerchantRequest registerAsMerchantRequest) {
         Optional<User> byEmail = userRepository.findByEmail(registerAsMerchantRequest.getEmail());
         Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(registerAsMerchantRequest.getPhoneNumber());
         if (byEmail.isPresent() || byPhoneNumber.isPresent()) {
@@ -61,17 +61,15 @@ class UserService {
         user.setRoles(asSet(roleRepository.getRoleByName("ROLE_MERCHANT")));
         userRepository.save(user);
         log.info("Registration with phone number: {}, email: {}", user.getPhoneNumber(), user.getEmail());
+        return authenticate(new AuthenticateRequest(user.getEmail(), user.getPassword()));
 
     }
 
-    TokenResponse authenticateUserByOneTimePassword(LoginRequest loginRequest) {
+    TokenResponse authenticate(AuthenticateRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getPhoneNumber(),
-                        loginRequest.getOneTimePassword()
-                )
-                                                                          );
-
+                        loginRequest.getUsername(),
+                        loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwtToken = tokenProvider.generateToken(authentication);
         return new TokenResponse(jwtToken);

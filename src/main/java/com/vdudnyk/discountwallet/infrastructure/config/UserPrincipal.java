@@ -36,7 +36,7 @@ public class UserPrincipal implements UserDetails {
                 .collect(Collectors.toList());
         return new UserPrincipal(
                 user.getId(),
-                user.getPhoneNumber(),
+                user.getEmail(),
                 user.getPassword(),
                 authorities
         );

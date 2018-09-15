@@ -1,10 +1,7 @@
 package com.vdudnyk.discountwallet.infrastructure.controller;
 
 import com.vdudnyk.discountwallet.application.user.UserFacade;
-import com.vdudnyk.discountwallet.application.user.shared.LoginRequest;
-import com.vdudnyk.discountwallet.application.user.shared.RegisterAsMerchantRequest;
-import com.vdudnyk.discountwallet.application.user.shared.RegisterAsUserRequest;
-import com.vdudnyk.discountwallet.application.user.shared.TokenResponse;
+import com.vdudnyk.discountwallet.application.user.shared.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +16,9 @@ public class UserController {
     private final UserFacade userFacade;
 
     @PostMapping("/merchants")
-    ResponseEntity<String> registerAsMerchant(@RequestBody RegisterAsMerchantRequest registerAsMerchantRequest) {
-        userFacade.registerAsMerchant(registerAsMerchantRequest);
-        return ResponseEntity.ok("SUCCESS");
+    ResponseEntity<TokenResponse> registerAsMerchant(@RequestBody RegisterAsMerchantRequest registerAsMerchantRequest) {
+        TokenResponse tokenResponse = userFacade.registerAsMerchant(registerAsMerchantRequest);
+        return ResponseEntity.ok(tokenResponse);
     }
 
     @PostMapping
@@ -30,8 +27,8 @@ public class UserController {
         return ResponseEntity.ok("SUCCESS");
     }
 
-    @PostMapping("/authenticate")
-    ResponseEntity<TokenResponse> authenticateByPhoneNumberAndOtp(@RequestBody LoginRequest request) {
+    @PostMapping("/authentications")
+    ResponseEntity<TokenResponse> authenticate(@RequestBody AuthenticateRequest request) {
         return ResponseEntity.ok(userFacade.authenticate(request));
     }
 }

@@ -1,6 +1,6 @@
 package com.vdudnyk.discountwallet.application.user;
 
-import com.vdudnyk.discountwallet.application.user.shared.LoginRequest;
+import com.vdudnyk.discountwallet.application.user.shared.AuthenticateRequest;
 import com.vdudnyk.discountwallet.application.user.shared.RegisterAsMerchantRequest;
 import com.vdudnyk.discountwallet.application.user.shared.RegisterAsUserRequest;
 import com.vdudnyk.discountwallet.application.user.shared.TokenResponse;
@@ -16,11 +16,11 @@ public class UserFacade {
         userService.registerAsUser(request);
     }
 
-    public void registerAsMerchant(RegisterAsMerchantRequest registerAsMerchantRequest) {
-        userService.registerAsMerchant(registerAsMerchantRequest);
+    public TokenResponse registerAsMerchant(RegisterAsMerchantRequest registerAsMerchantRequest) {
+        return userService.registerAsMerchant(registerAsMerchantRequest);
     }
 
-    public TokenResponse authenticate(LoginRequest request) {
-        return userService.authenticateUserByOneTimePassword(request);
+    public TokenResponse authenticate(AuthenticateRequest request) {
+        return userService.authenticate(request);
     }
 }

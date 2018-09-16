@@ -61,7 +61,7 @@ class UserService {
         user.setRoles(asSet(roleRepository.getRoleByName("ROLE_MERCHANT")));
         userRepository.save(user);
         log.info("Registration with phone number: {}, email: {}", user.getPhoneNumber(), user.getEmail());
-        return authenticate(new AuthenticateRequest(user.getEmail(), user.getPassword()));
+        return authenticate(new AuthenticateRequest(user.getEmail(), registerAsMerchantRequest.getPassword()));
 
     }
 

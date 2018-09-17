@@ -74,4 +74,17 @@ class UserService {
         String jwtToken = tokenProvider.generateToken(authentication);
         return new TokenResponse(jwtToken);
     }
+
+    User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) authentication.getPrincipal();
+        return userRepository.findByEmail(username)
+                             .orElseThrow(() -> new ApiException("Something went wrong " +
+                                                                 "while trying to get logged user"));
+    }
+
+    User getUserByUsername(String username) {
+        return userRepository.findByEmail(username)
+                             .orElseGet(() -> userRepository.findByPhoneNumber(username).orElseThrow(() -> new ApiException("Cannot find user")));
+    }
 }

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController(value = "/merchant")
-public class MerchantController {
+public class BusinessController {
     @PostMapping()
     ResponseEntity<String> test() {
         return ResponseEntity.ok("SUCCESS");

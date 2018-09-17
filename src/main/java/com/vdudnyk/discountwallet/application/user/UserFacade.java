@@ -23,4 +23,12 @@ public class UserFacade {
     public TokenResponse authenticate(AuthenticateRequest request) {
         return userService.authenticate(request);
     }
+
+    public User getAuthenticatedUser() {
+        return userService.getAuthenticatedUser();
+    }
+
+    public User getUserByUsername(String username) {
+        return userService.getUserByUsername(username);
+    }
 }

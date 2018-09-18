@@ -21,5 +21,5 @@ public class Business {
     private String address;
     private String zipCode;
     @ManyToMany
-    private Set<User> administrators;
+    private Set<User> administrator;
 }

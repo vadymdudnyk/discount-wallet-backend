@@ -14,23 +14,23 @@ import java.util.List;
 public class BusinessFacade {
     private final BusinessService businessService;
 
-    List<Business> getUserBusinesses() {
-        return businessService.getBusinesses();
+    public List<Business> getUserBusinesses() {
+        return businessService.getUserBusinesses();
     }
 
-    void setUpBusiness(SetUpBusinessCommand setUpBusinessCommand) {
+    public void setUpBusiness(SetUpBusinessCommand setUpBusinessCommand) {
         businessService.setUpBusiness(setUpBusinessCommand);
     }
 
-    void updateBusiness(UpdateBusinessCommand updateBusinessCommand) {
+    public void updateBusiness(UpdateBusinessCommand updateBusinessCommand) {
         businessService.updateBusiness(updateBusinessCommand);
     }
 
-    void addAdministratorToBusiness(AddAdministratorToBusinessCommand addAdministratorToBusinessCommand) {
+    public void addAdministratorToBusiness(AddAdministratorToBusinessCommand addAdministratorToBusinessCommand) {
         businessService.addAdministratorToBusiness(addAdministratorToBusinessCommand);
     }
 
-    void removeAdministratorFromBusiness(RemoveAdministratorCommand removeAdministratorCommand) {
+    public void removeAdministratorFromBusiness(RemoveAdministratorCommand removeAdministratorCommand) {
         businessService.removeAdministratorFromBusiness(removeAdministratorCommand);
     }
 }

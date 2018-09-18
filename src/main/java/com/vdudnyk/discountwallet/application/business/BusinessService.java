@@ -20,13 +20,13 @@ public class BusinessService {
     private final BusinessRepository businessRepository;
     private final UserFacade userFacade;
 
-    List<Business> getBusinesses() {
-        return businessRepository.findAllByAdministrators(userFacade.getAuthenticatedUser());
+    List<Business> getUserBusinesses() {
+        return businessRepository.findAllByAdministrator(userFacade.getAuthenticatedUser());
     }
 
     void setUpBusiness(SetUpBusinessCommand setUpBusinessRequest) {
         Business business = new Business();
-        business.setAdministrators(Collections.singleton(userFacade.getAuthenticatedUser()));
+        business.setAdministrator(Collections.singleton(userFacade.getAuthenticatedUser()));
         business.setBusinessName(setUpBusinessRequest.getBusinessName());
         business.setAddress(setUpBusinessRequest.getAddress());
         business.setCity(setUpBusinessRequest.getCity());
@@ -40,7 +40,7 @@ public class BusinessService {
             throw new ApiException("Cannot find business");
         }
         Business business = businessOptional.get();
-        if (!business.getAdministrators().contains(userFacade.getAuthenticatedUser())) {
+        if (!business.getAdministrator().contains(userFacade.getAuthenticatedUser())) {
             throw new ApiException("Cannot update business");
         }
 
@@ -57,12 +57,12 @@ public class BusinessService {
             throw new ApiException("Cannot find business");
         }
         Business business = businessOptional.get();
-        if (business.getAdministrators().contains(userFacade.getAuthenticatedUser())) {
+        if (!business.getAdministrator().contains(userFacade.getAuthenticatedUser())) {
             throw new ApiException("Cannot update business, permission denied");
         }
 
         User newAdministrator = userFacade.getUserByUsername(addAdministratorToBusinessRequest.getUsernameOfAdministrator());
-        business.getAdministrators().add(newAdministrator);
+        business.getAdministrator().add(newAdministrator);
         businessRepository.save(business);
     }
 
@@ -73,7 +73,7 @@ public class BusinessService {
         }
         Business business = businessOptional.get();
         User authenticatedUser = userFacade.getAuthenticatedUser();
-        if (business.getAdministrators().contains(authenticatedUser)) {
+        if (business.getAdministrator().contains(authenticatedUser)) {
             throw new ApiException("Cannot update business, permission denied");
         }
 
@@ -82,7 +82,7 @@ public class BusinessService {
             throw new ApiException("Cannot remove yourself from business");
         }
 
-        business.getAdministrators()
+        business.getAdministrator()
                 .remove(userFacade.getUserByUsername(removeAdministratorCommand.getUsernameOfAdministrator()));
         businessRepository.save(business);
 

@@ -6,6 +6,7 @@ import com.vdudnyk.discountwallet.application.user.shared.RegisterAsMerchantRequ
 import com.vdudnyk.discountwallet.application.user.shared.RegisterAsUserRequest;
 import com.vdudnyk.discountwallet.application.user.shared.TokenResponse;
 import com.vdudnyk.discountwallet.infrastructure.config.JwtTokenProvider;
+import com.vdudnyk.discountwallet.infrastructure.config.UserPrincipal;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -77,8 +78,8 @@ class UserService {
 
     User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = (String) authentication.getPrincipal();
-        return userRepository.findByEmail(username)
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        return userRepository.findByEmail(userPrincipal.getUsername())
                              .orElseThrow(() -> new ApiException("Something went wrong " +
                                                                  "while trying to get logged user"));
     }

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +21,13 @@ public class BusinessService {
 
     List<Business> getUserBusinesses() {
         return businessRepository.findAllByAdministrator(userFacade.getAuthenticatedUser());
+    }
+
+    Business getUserBusiness(Long businessId) {
+        return businessRepository.findById(businessId)
+                                 .filter(business -> business.getAdministrator().contains(userFacade.getAuthenticatedUser()))
+                                 .orElseThrow(() -> new ApiException("Business not found"));
+
     }
 
     void setUpBusiness(SetUpBusinessCommand setUpBusinessRequest) {
@@ -35,11 +41,8 @@ public class BusinessService {
     }
 
     void updateBusiness(UpdateBusinessCommand updateBusinessRequest) {
-        Optional<Business> businessOptional = businessRepository.findById(updateBusinessRequest.getId());
-        if (!businessOptional.isPresent()) {
-            throw new ApiException("Cannot find business");
-        }
-        Business business = businessOptional.get();
+        Business business = getBusinessById(updateBusinessRequest.getId());
+
         if (!business.getAdministrator().contains(userFacade.getAuthenticatedUser())) {
             throw new ApiException("Cannot update business");
         }
@@ -52,11 +55,8 @@ public class BusinessService {
     }
 
     void addAdministratorToBusiness(AddAdministratorToBusinessCommand addAdministratorToBusinessRequest) {
-        Optional<Business> businessOptional = businessRepository.findById(addAdministratorToBusinessRequest.getBusinessId());
-        if (!businessOptional.isPresent()) {
-            throw new ApiException("Cannot find business");
-        }
-        Business business = businessOptional.get();
+        Business business = getBusinessById(addAdministratorToBusinessRequest.getBusinessId());
+
         if (!business.getAdministrator().contains(userFacade.getAuthenticatedUser())) {
             throw new ApiException("Cannot update business, permission denied");
         }
@@ -67,11 +67,7 @@ public class BusinessService {
     }
 
     void removeAdministratorFromBusiness(RemoveAdministratorCommand removeAdministratorCommand) {
-        Optional<Business> businessOptional = businessRepository.findById(removeAdministratorCommand.getBusinessId());
-        if (!businessOptional.isPresent()) {
-            throw new ApiException("Cannot find business");
-        }
-        Business business = businessOptional.get();
+        Business business = getBusinessById(removeAdministratorCommand.getBusinessId());
         User authenticatedUser = userFacade.getAuthenticatedUser();
         if (business.getAdministrator().contains(authenticatedUser)) {
             throw new ApiException("Cannot update business, permission denied");
@@ -86,5 +82,19 @@ public class BusinessService {
                 .remove(userFacade.getUserByUsername(removeAdministratorCommand.getUsernameOfAdministrator()));
         businessRepository.save(business);
 
+    }
+
+    Business getBusiness(Long businessId) {
+        return getBusinessById(businessId);
+    }
+
+    void addCustomer(User user, Long businessId) {
+        Business business = getBusinessById(businessId);
+        business.getCustomer().add(user);
+        businessRepository.save(business);
+    }
+
+    private Business getBusinessById(Long businessId) {
+        return businessRepository.findById(businessId).orElseThrow(() -> new ApiException("Business not found"));
     }
 }

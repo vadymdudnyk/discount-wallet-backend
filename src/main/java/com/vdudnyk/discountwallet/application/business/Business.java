@@ -22,4 +22,7 @@ public class Business {
     private String zipCode;
     @ManyToMany
     private Set<User> administrator;
+
+    @ManyToMany
+    private Set<User> customer;
 }

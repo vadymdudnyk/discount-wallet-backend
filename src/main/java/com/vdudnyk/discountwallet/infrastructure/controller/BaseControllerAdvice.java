@@ -3,11 +3,12 @@ package com.vdudnyk.discountwallet.infrastructure.controller;
 import com.vdudnyk.discountwallet.application.shared.ApiException;
 import lombok.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@org.springframework.web.bind.annotation.ControllerAdvice
-public class ControllerAdvice extends ResponseEntityExceptionHandler {
+@ControllerAdvice
+public class BaseControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ApiException.class})
     protected ResponseEntity<Object> handle(ApiException e) {

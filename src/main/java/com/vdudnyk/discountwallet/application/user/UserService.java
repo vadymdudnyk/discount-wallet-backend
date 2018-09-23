@@ -30,7 +30,8 @@ class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
 
-    void registerAsUser(RegisterAsUserRequest registerAsUserRequest) {
+    TokenResponse registerAsUser(RegisterAsUserRequest registerAsUserRequest) {
+        log.info("Attempt to register user: {}", registerAsUserRequest.getEmail());
         Optional<User> byEmail = userRepository.findByEmail(registerAsUserRequest.getEmail());
         Optional<User> byPhoneNumber = userRepository.findByPhoneNumber(registerAsUserRequest.getPhoneNumber());
         if (byEmail.isPresent() || byPhoneNumber.isPresent()) {
@@ -45,6 +46,8 @@ class UserService {
         user.setRoles(asSet(roleRepository.getRoleByName("ROLE_USER")));
         userRepository.save(user);
         log.info("Registration with phone number: {}, email: {}", user.getPhoneNumber(), user.getEmail());
+        return authenticate(new AuthenticateRequest(registerAsUserRequest.getEmail(), registerAsUserRequest.getPassword()));
+
     }
 
     TokenResponse registerAsMerchant(RegisterAsMerchantRequest registerAsMerchantRequest) {

@@ -27,6 +27,9 @@ public class BusinessFacade {
         return businessService.getBusiness(businessId);
     }
 
+    public List<Business> getAllBusinesses() {
+        return businessService.getAllBusinesses();
+    }
     public void addCustomer(User user, Long businessId) {
         businessService.addCustomer(user, businessId);
     }

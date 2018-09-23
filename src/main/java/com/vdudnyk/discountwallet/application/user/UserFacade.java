@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 public class UserFacade {
     private final UserService userService;
 
-    public void registerAsUser(RegisterAsUserRequest request) {
-        userService.registerAsUser(request);
+    public TokenResponse registerAsUser(RegisterAsUserRequest request) {
+        return userService.registerAsUser(request);
     }
 
     public TokenResponse registerAsMerchant(RegisterAsMerchantRequest registerAsMerchantRequest) {

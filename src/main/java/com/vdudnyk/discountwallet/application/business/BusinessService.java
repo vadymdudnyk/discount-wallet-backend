@@ -97,4 +97,8 @@ public class BusinessService {
     private Business getBusinessById(Long businessId) {
         return businessRepository.findById(businessId).orElseThrow(() -> new ApiException("Business not found"));
     }
+
+     List<Business> getAllBusinesses() {
+        return businessRepository.findAll();
+    }
 }

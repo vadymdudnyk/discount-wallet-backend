@@ -18,6 +18,7 @@ spring:
 logging:
   level:
     org.hibernate.engine.jdbc.env.internal.LobCreatorBuilderImpl: ERROR
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
 
 app:
   jwtSecret: Kasdo2@#@kkd

@@ -13,4 +13,8 @@ public class CodeFacade {
     public List<Code> getAllBusinessCodes(Long businessId) {
         return codeService.getAllBusinessCodes(businessId);
     }
+
+    public void validateCode(Long businessId, String code) {
+        codeService.validateCode(businessId, code);
+    }
 }

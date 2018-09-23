@@ -22,9 +22,9 @@ public class UserController {
     }
 
     @PostMapping
-    ResponseEntity<String> registerAsUser(@RequestBody RegisterAsUserRequest request) {
-        userFacade.registerAsUser(request);
-        return ResponseEntity.ok("SUCCESS");
+    ResponseEntity<TokenResponse> registerAsUser(@RequestBody RegisterAsUserRequest request) {
+        TokenResponse tokenResponse = userFacade.registerAsUser(request);
+        return ResponseEntity.ok(tokenResponse);
     }
 
     @PostMapping("/authentications")

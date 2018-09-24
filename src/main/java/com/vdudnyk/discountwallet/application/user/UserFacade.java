@@ -31,4 +31,8 @@ public class UserFacade {
     public User getUserByUsername(String username) {
         return userService.getUserByUsername(username);
     }
+
+    public User getUserById(Long id){
+        return userService.getUserById(id);
+    }
 }

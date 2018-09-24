@@ -1,7 +1,7 @@
 package com.vdudnyk.discountwallet.application.customer;
 
 import com.vdudnyk.discountwallet.application.business.BusinessFacade;
-import com.vdudnyk.discountwallet.application.code.CodeFacade;
+import com.vdudnyk.discountwallet.application.campaign.CampaignExecutorFacade;
 import com.vdudnyk.discountwallet.application.customer.dto.DiscoveredBusinessDTO;
 import com.vdudnyk.discountwallet.application.user.User;
 import com.vdudnyk.discountwallet.application.user.UserFacade;
@@ -17,13 +17,14 @@ public class CustomerService {
 
     private final UserFacade userFacade;
     private final BusinessFacade businessFacade;
-    private final CodeFacade codeFacade;
+    private final CampaignExecutorFacade campaignExecutorFacade;
 
     void subscribeUserToBusiness(Long businessId) {
         User authenticatedUser = userFacade.getAuthenticatedUser();
         businessFacade.addCustomer(authenticatedUser, businessId);
         //welcome codes generate here
 
+        campaignExecutorFacade.executeWelcomeCampaign(authenticatedUser.getId(), businessId);
     }
 
     List<DiscoveredBusinessDTO> discoverBusinesses() {

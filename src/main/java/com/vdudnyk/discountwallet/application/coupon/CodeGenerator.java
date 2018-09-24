@@ -1,4 +1,4 @@
-package com.vdudnyk.discountwallet.application.code;
+package com.vdudnyk.discountwallet.application.coupon;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;

@@ -91,4 +91,8 @@ class UserService {
         return userRepository.findByEmail(username)
                              .orElseGet(() -> userRepository.findByPhoneNumber(username).orElseThrow(() -> new ApiException("Cannot find user")));
     }
+
+    User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new ApiException("Cannot find user"));
+    }
 }

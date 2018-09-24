@@ -1,6 +1,7 @@
-package com.vdudnyk.discountwallet.application.code;
+package com.vdudnyk.discountwallet.application.coupon;
 
 import com.vdudnyk.discountwallet.application.business.Business;
+import com.vdudnyk.discountwallet.application.campaign.Campaign;
 import com.vdudnyk.discountwallet.application.user.User;
 import lombok.Data;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class Code {
+public class Coupon {
 
     @Id
     @GeneratedValue
@@ -23,16 +24,17 @@ public class Code {
     @ManyToOne
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    private CodeType codeType;
+    private Long campaignId;
 
-    private String description;
+    @Enumerated(EnumType.STRING)
+    private CouponType couponType;
 
     private Long usages;
     private Long maxUsages;
-
     private Boolean active;
+    private String description;
 
     private LocalDateTime creationDate;
     private LocalDateTime expirationDate;
+
 }

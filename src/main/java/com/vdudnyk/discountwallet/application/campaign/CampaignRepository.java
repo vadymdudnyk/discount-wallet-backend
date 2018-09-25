@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 interface CampaignRepository extends JpaRepository<Campaign, Long> {
-    List<Campaign> findAllByBusiness(Long businessId);
+    List<Campaign> findAllByBusinessId(Long businessId);
 }

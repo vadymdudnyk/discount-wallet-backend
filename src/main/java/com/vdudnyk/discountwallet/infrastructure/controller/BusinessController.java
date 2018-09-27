@@ -2,12 +2,10 @@ package com.vdudnyk.discountwallet.infrastructure.controller;
 
 import com.vdudnyk.discountwallet.application.business.Business;
 import com.vdudnyk.discountwallet.application.business.BusinessFacade;
-import com.vdudnyk.discountwallet.application.business.shared.AddAdministratorToBusinessCommand;
-import com.vdudnyk.discountwallet.application.business.shared.RemoveAdministratorCommand;
-import com.vdudnyk.discountwallet.application.business.shared.SetUpBusinessCommand;
-import com.vdudnyk.discountwallet.application.business.shared.UpdateBusinessCommand;
+import com.vdudnyk.discountwallet.application.business.shared.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,23 +24,32 @@ public class BusinessController {
     }
 
     @PostMapping
-    void setUpBusiness(@RequestBody SetUpBusinessCommand setUpBusinessCommand) {
+    ResponseEntity<Void> setUpBusiness(@RequestBody SetUpBusinessCommand setUpBusinessCommand) {
         log.info("SetUpBusiness request");
         businessFacade.setUpBusiness(setUpBusinessCommand);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping
-    void updateBusiness(@RequestBody UpdateBusinessCommand updateBusinessCommand) {
+    ResponseEntity<Void> updateBusiness(@RequestBody UpdateBusinessCommand updateBusinessCommand) {
         businessFacade.updateBusiness(updateBusinessCommand);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/administrators")
-    void addAdministratorToBusiness(@RequestBody AddAdministratorToBusinessCommand addAdministratorToBusinessCommand) {
+    ResponseEntity<Void> addAdministratorToBusiness(@RequestBody AddAdministratorToBusinessCommand addAdministratorToBusinessCommand) {
         businessFacade.addAdministratorToBusiness(addAdministratorToBusinessCommand);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/administrators")
-    void removeAdministratorFromBusiness(@RequestBody RemoveAdministratorCommand removeAdministratorCommand) {
+    ResponseEntity<Void> removeAdministratorFromBusiness(@RequestBody RemoveAdministratorCommand removeAdministratorCommand) {
         businessFacade.removeAdministratorFromBusiness(removeAdministratorCommand);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("{businessId}/customers")
+    ResponseEntity<List<CustomerDTO>> getBusinessCustomers(@PathVariable Long businessId) {
+        return ResponseEntity.ok(businessFacade.getBusinessCustomers(businessId));
     }
 }

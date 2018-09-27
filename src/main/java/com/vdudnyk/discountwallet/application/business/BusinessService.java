@@ -1,9 +1,6 @@
 package com.vdudnyk.discountwallet.application.business;
 
-import com.vdudnyk.discountwallet.application.business.shared.AddAdministratorToBusinessCommand;
-import com.vdudnyk.discountwallet.application.business.shared.RemoveAdministratorCommand;
-import com.vdudnyk.discountwallet.application.business.shared.SetUpBusinessCommand;
-import com.vdudnyk.discountwallet.application.business.shared.UpdateBusinessCommand;
+import com.vdudnyk.discountwallet.application.business.shared.*;
 import com.vdudnyk.discountwallet.application.shared.ApiException;
 import com.vdudnyk.discountwallet.application.user.User;
 import com.vdudnyk.discountwallet.application.user.UserFacade;
@@ -12,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,9 +41,7 @@ public class BusinessService {
     void updateBusiness(UpdateBusinessCommand updateBusinessRequest) {
         Business business = getBusinessById(updateBusinessRequest.getId());
 
-        if (!business.getAdministrator().contains(userFacade.getAuthenticatedUser())) {
-            throw new ApiException("Cannot update business");
-        }
+        validateBusinessOwnership(business);
 
         business.setZipCode(updateBusinessRequest.getZipCode());
         business.setCity(updateBusinessRequest.getCity());
@@ -57,9 +53,7 @@ public class BusinessService {
     void addAdministratorToBusiness(AddAdministratorToBusinessCommand addAdministratorToBusinessRequest) {
         Business business = getBusinessById(addAdministratorToBusinessRequest.getBusinessId());
 
-        if (!business.getAdministrator().contains(userFacade.getAuthenticatedUser())) {
-            throw new ApiException("Cannot update business, permission denied");
-        }
+        validateBusinessOwnership(business);
 
         User newAdministrator = userFacade.getUserByUsername(addAdministratorToBusinessRequest.getUsernameOfAdministrator());
         business.getAdministrator().add(newAdministrator);
@@ -69,10 +63,7 @@ public class BusinessService {
     void removeAdministratorFromBusiness(RemoveAdministratorCommand removeAdministratorCommand) {
         Business business = getBusinessById(removeAdministratorCommand.getBusinessId());
         User authenticatedUser = userFacade.getAuthenticatedUser();
-        if (business.getAdministrator().contains(authenticatedUser)) {
-            throw new ApiException("Cannot update business, permission denied");
-        }
-
+        validateBusinessOwnership(business);
         if (authenticatedUser.getEmail().equals(removeAdministratorCommand.getUsernameOfAdministrator()) ||
             authenticatedUser.getPhoneNumber().equals(removeAdministratorCommand.getUsernameOfAdministrator())) {
             throw new ApiException("Cannot remove yourself from business");
@@ -94,11 +85,32 @@ public class BusinessService {
         businessRepository.save(business);
     }
 
+    List<Business> getAllBusinesses() {
+        return businessRepository.findAll();
+    }
+
+    List<CustomerDTO> getBusinessCustomers(Long businessId) {
+        return getBusinessById(businessId)
+                .getCustomer()
+                .stream()
+                .map(user -> new CustomerDTO(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getPhoneNumber(),
+                        user.getFirstName(),
+                        user.getLastName()
+                ))
+                .collect(Collectors.toList());
+    }
+
     private Business getBusinessById(Long businessId) {
         return businessRepository.findById(businessId).orElseThrow(() -> new ApiException("Business not found"));
     }
 
-     List<Business> getAllBusinesses() {
-        return businessRepository.findAll();
+    private void validateBusinessOwnership(Business business) {
+        User authenticatedUser = userFacade.getAuthenticatedUser();
+        if (!business.getAdministrator().contains(authenticatedUser)) {
+            throw new ApiException("Permission denied");
+        }
     }
 }

@@ -1,9 +1,6 @@
 package com.vdudnyk.discountwallet.application.business;
 
-import com.vdudnyk.discountwallet.application.business.shared.AddAdministratorToBusinessCommand;
-import com.vdudnyk.discountwallet.application.business.shared.RemoveAdministratorCommand;
-import com.vdudnyk.discountwallet.application.business.shared.SetUpBusinessCommand;
-import com.vdudnyk.discountwallet.application.business.shared.UpdateBusinessCommand;
+import com.vdudnyk.discountwallet.application.business.shared.*;
 import com.vdudnyk.discountwallet.application.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,5 +45,9 @@ public class BusinessFacade {
 
     public void removeAdministratorFromBusiness(RemoveAdministratorCommand removeAdministratorCommand) {
         businessService.removeAdministratorFromBusiness(removeAdministratorCommand);
+    }
+
+    public List<CustomerDTO> getBusinessCustomers(Long businessId) {
+        return businessService.getBusinessCustomers(businessId);
     }
 }

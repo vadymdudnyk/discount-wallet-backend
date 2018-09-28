@@ -1,5 +1,6 @@
 package com.vdudnyk.discountwallet.application.customer;
 
+import com.vdudnyk.discountwallet.application.coupon.shared.CustomerCouponDTO;
 import com.vdudnyk.discountwallet.application.customer.dto.DiscoveredBusinessDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,5 +18,9 @@ public class CustomerFacade {
 
     public List<DiscoveredBusinessDTO> discoverBusinesses() {
         return customerService.discoverBusinesses();
+    }
+
+    public List<CustomerCouponDTO> getCustomerCoupons() {
+        return customerService.getCustomerCoupons();
     }
 }

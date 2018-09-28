@@ -2,6 +2,7 @@ package com.vdudnyk.discountwallet.application.coupon;
 
 import com.vdudnyk.discountwallet.application.coupon.shared.CouponDTO;
 import com.vdudnyk.discountwallet.application.coupon.shared.CreateCouponRequest;
+import com.vdudnyk.discountwallet.application.coupon.shared.CustomerCouponDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,4 +25,7 @@ public class CouponFacade {
         return couponService.createCoupon(createCouponRequest);
     }
 
+    public List<CustomerCouponDTO> getCustomerCoupons(Long userId) {
+        return couponService.getCustomerCoupons(userId);
+    }
 }

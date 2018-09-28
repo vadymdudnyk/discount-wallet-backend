@@ -2,6 +2,8 @@ package com.vdudnyk.discountwallet.application.customer;
 
 import com.vdudnyk.discountwallet.application.business.BusinessFacade;
 import com.vdudnyk.discountwallet.application.campaign.CampaignExecutorFacade;
+import com.vdudnyk.discountwallet.application.coupon.CouponFacade;
+import com.vdudnyk.discountwallet.application.coupon.shared.CustomerCouponDTO;
 import com.vdudnyk.discountwallet.application.customer.dto.DiscoveredBusinessDTO;
 import com.vdudnyk.discountwallet.application.user.User;
 import com.vdudnyk.discountwallet.application.user.UserFacade;
@@ -20,6 +22,7 @@ public class CustomerService {
     private final UserFacade userFacade;
     private final BusinessFacade businessFacade;
     private final CampaignExecutorFacade campaignExecutorFacade;
+    private final CouponFacade couponFacade;
 
     void subscribeUserToBusiness(Long businessId) {
         User authenticatedUser = userFacade.getAuthenticatedUser();
@@ -45,4 +48,8 @@ public class CustomerService {
                              .collect(Collectors.toList());
     }
 
+    List<CustomerCouponDTO> getCustomerCoupons() {
+        User authenticatedUser = userFacade.getAuthenticatedUser();
+        return couponFacade.getCustomerCoupons(authenticatedUser.getId());
+    }
 }

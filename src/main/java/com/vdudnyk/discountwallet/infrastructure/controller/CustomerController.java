@@ -1,5 +1,6 @@
 package com.vdudnyk.discountwallet.infrastructure.controller;
 
+import com.vdudnyk.discountwallet.application.coupon.shared.CustomerCouponDTO;
 import com.vdudnyk.discountwallet.application.customer.CustomerFacade;
 import com.vdudnyk.discountwallet.application.customer.dto.DiscoveredBusinessDTO;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +27,10 @@ public class CustomerController {
     private ResponseEntity<List<DiscoveredBusinessDTO>> discoverBusinesses() {
         List<DiscoveredBusinessDTO> businesses = customerFacade.discoverBusinesses();
         return ResponseEntity.ok(businesses);
+    }
+
+    @GetMapping("/customer/coupons")
+    private ResponseEntity<List<CustomerCouponDTO>> getCustomerCoupons() {
+        return ResponseEntity.ok(customerFacade.getCustomerCoupons());
     }
 }

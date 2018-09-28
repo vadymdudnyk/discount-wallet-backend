@@ -6,4 +6,6 @@ import java.util.List;
 
 interface CouponRepository extends JpaRepository<Coupon, Long> {
     List<Coupon> findAllByBusinessId(Long businessId);
+
+    List<Coupon> findAllByUserId(Long userId);
 }

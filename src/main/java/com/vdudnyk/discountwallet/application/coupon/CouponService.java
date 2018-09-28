@@ -4,6 +4,7 @@ import com.vdudnyk.discountwallet.application.business.BusinessFacade;
 import com.vdudnyk.discountwallet.application.business.shared.CustomerDTO;
 import com.vdudnyk.discountwallet.application.coupon.shared.CouponDTO;
 import com.vdudnyk.discountwallet.application.coupon.shared.CreateCouponRequest;
+import com.vdudnyk.discountwallet.application.coupon.shared.CustomerCouponDTO;
 import com.vdudnyk.discountwallet.application.user.UserFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,5 +65,21 @@ class CouponService {
         coupon.setCampaignId(createCouponRequest.getCampaignId());
         coupon.setValue(codeGenerator.generateSimpleCode());
         return couponRepository.save(coupon);
+    }
+
+    List<CustomerCouponDTO> getCustomerCoupons(Long userId) {
+        return couponRepository.findAllByUserId(userId)
+                               .stream()
+                               .map(coupon -> new CustomerCouponDTO(
+                                       coupon.getValue(),
+                                       coupon.getCouponType(),
+                                       coupon.getUsages(),
+                                       coupon.getMaxUsages(),
+                                       coupon.getActive(),
+                                       coupon.getDescription(),
+                                       coupon.getCreationDate(),
+                                       coupon.getExpirationDate()
+                               ))
+                               .collect(Collectors.toList());
     }
 }

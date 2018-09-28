@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CampaignExecutorFacade {
-    private CampaignExecutorService campaignExecutorService;
+    private final CampaignExecutorService campaignExecutorService;
 
     public void executeWelcomeCampaign(Long businessId, Long userId){
         campaignExecutorService.executeWelcomeCampaigns(businessId, userId);

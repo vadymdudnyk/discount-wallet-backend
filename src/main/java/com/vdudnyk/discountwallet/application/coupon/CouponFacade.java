@@ -1,5 +1,6 @@
 package com.vdudnyk.discountwallet.application.coupon;
 
+import com.vdudnyk.discountwallet.application.coupon.shared.CouponDTO;
 import com.vdudnyk.discountwallet.application.coupon.shared.CreateCouponRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import java.util.List;
 public class CouponFacade {
     private final CouponService couponService;
 
-    public List<Coupon> getAllBusinessCoupones(Long businessId) {
+    public List<CouponDTO> getAllBusinessCoupons(Long businessId) {
         return couponService.getAllBusinessCoupons(businessId);
     }
 
@@ -22,4 +23,5 @@ public class CouponFacade {
     public Coupon createCoupon(CreateCouponRequest createCouponRequest) {
         return couponService.createCoupon(createCouponRequest);
     }
+
 }

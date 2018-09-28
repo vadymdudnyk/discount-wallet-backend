@@ -7,6 +7,7 @@ import com.vdudnyk.discountwallet.application.notification.NotificationFacade;
 import com.vdudnyk.discountwallet.application.user.User;
 import com.vdudnyk.discountwallet.application.user.UserFacade;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static java.time.temporal.ChronoUnit.HOURS;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 class CampaignExecutorService {
@@ -24,6 +26,7 @@ class CampaignExecutorService {
 
     void executeWelcomeCampaigns(Long businessId, Long userId) {
         User user = userFacade.getUserById(userId);
+        log.info("Executing welcome campaign for user:{}, business: {}", user.getEmail(), businessId);
         List<Campaign> campaigns = campaignFacade.getAllCampaignsByBusinessId(businessId);
 
         campaigns.stream()

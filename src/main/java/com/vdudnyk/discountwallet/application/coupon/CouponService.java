@@ -1,6 +1,8 @@
 package com.vdudnyk.discountwallet.application.coupon;
 
 import com.vdudnyk.discountwallet.application.business.BusinessFacade;
+import com.vdudnyk.discountwallet.application.business.shared.CustomerDTO;
+import com.vdudnyk.discountwallet.application.coupon.shared.CouponDTO;
 import com.vdudnyk.discountwallet.application.coupon.shared.CreateCouponRequest;
 import com.vdudnyk.discountwallet.application.user.UserFacade;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -18,8 +21,29 @@ class CouponService {
     private final BusinessFacade businessFacade;
     private final UserFacade userFacade;
 
-    List<Coupon> getAllBusinessCoupons(Long businessId) {
-        return couponRepository.findAllByBusiness(businessId);
+    List<CouponDTO> getAllBusinessCoupons(Long businessId) {
+        return couponRepository.findAllByBusinessId(businessId)
+                               .stream()
+                               .map(coupon -> new CouponDTO(
+                                       coupon.getId(),
+                                       coupon.getValue(),
+                                       new CustomerDTO(
+                                               coupon.getUser().getId(),
+                                               coupon.getUser().getEmail(),
+                                               coupon.getUser().getPhoneNumber(),
+                                               coupon.getUser().getFirstName(),
+                                               coupon.getUser().getLastName()
+                                       ),
+                                       coupon.getCampaignId(),
+                                       coupon.getCouponType(),
+                                       coupon.getUsages(),
+                                       coupon.getMaxUsages(),
+                                       coupon.getActive(),
+                                       coupon.getDescription(),
+                                       coupon.getCreationDate(),
+                                       coupon.getExpirationDate()
+                               ))
+                               .collect(Collectors.toList());
     }
 
     void validateCode(Long businessId, String code) {

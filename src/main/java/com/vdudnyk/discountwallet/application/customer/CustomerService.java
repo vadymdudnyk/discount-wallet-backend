@@ -6,11 +6,13 @@ import com.vdudnyk.discountwallet.application.customer.dto.DiscoveredBusinessDTO
 import com.vdudnyk.discountwallet.application.user.User;
 import com.vdudnyk.discountwallet.application.user.UserFacade;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
@@ -21,10 +23,11 @@ public class CustomerService {
 
     void subscribeUserToBusiness(Long businessId) {
         User authenticatedUser = userFacade.getAuthenticatedUser();
+        log.info("Subscribing user: {} to business: {}", authenticatedUser.getEmail(), businessId);
         businessFacade.addCustomer(authenticatedUser, businessId);
         //welcome codes generate here
 
-        campaignExecutorFacade.executeWelcomeCampaign(authenticatedUser.getId(), businessId);
+        campaignExecutorFacade.executeWelcomeCampaign(businessId, authenticatedUser.getId());
     }
 
     List<DiscoveredBusinessDTO> discoverBusinesses() {

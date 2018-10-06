@@ -1,5 +1,8 @@
 package com.vdudnyk.discountwallet.application.user;
 
+import com.vdudnyk.discountwallet.application.event.EventFactory;
+import com.vdudnyk.discountwallet.application.event.EventSender;
+import com.vdudnyk.discountwallet.application.event.payload.UserDetails;
 import com.vdudnyk.discountwallet.application.shared.ApiException;
 import com.vdudnyk.discountwallet.application.user.shared.AuthenticateRequest;
 import com.vdudnyk.discountwallet.application.user.shared.RegisterAsMerchantRequest;
@@ -29,6 +32,7 @@ class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
+    private final EventSender eventSender;
 
     TokenResponse registerAsUser(RegisterAsUserRequest registerAsUserRequest) {
         log.info("Attempt to register user: {}", registerAsUserRequest.getEmail());
@@ -46,6 +50,7 @@ class UserService {
         user.setRoles(asSet(roleRepository.getRoleByName("ROLE_USER")));
         userRepository.save(user);
         log.info("Registration with phone number: {}, email: {}", user.getPhoneNumber(), user.getEmail());
+        eventSender.send(EventFactory.createUserRegisteredEvent(user.getId(), roleRepository.getRoleByName("ROLE_USER")));
         return authenticate(new AuthenticateRequest(registerAsUserRequest.getEmail(), registerAsUserRequest.getPassword()));
 
     }
@@ -76,6 +81,12 @@ class UserService {
                         loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwtToken = tokenProvider.generateToken(authentication);
+        User authenticatedUser = getAuthenticatedUser();
+        eventSender.send(EventFactory.createUserAuthenticatedEvent(
+                authenticatedUser.getId(),
+                new UserDetails(authenticatedUser.getId(),
+                                authenticatedUser.getEmail(),
+                                authenticatedUser.getPhoneNumber())));
         return new TokenResponse(jwtToken);
     }
 

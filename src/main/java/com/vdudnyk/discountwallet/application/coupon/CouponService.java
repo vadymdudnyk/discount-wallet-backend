@@ -5,12 +5,15 @@ import com.vdudnyk.discountwallet.application.business.shared.CustomerDTO;
 import com.vdudnyk.discountwallet.application.coupon.shared.CouponDTO;
 import com.vdudnyk.discountwallet.application.coupon.shared.CreateCouponRequest;
 import com.vdudnyk.discountwallet.application.coupon.shared.CustomerCouponDTO;
+import com.vdudnyk.discountwallet.application.shared.ApiException;
 import com.vdudnyk.discountwallet.application.user.UserFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -21,6 +24,7 @@ class CouponService {
     private final CodeGenerator codeGenerator;
     private final BusinessFacade businessFacade;
     private final UserFacade userFacade;
+    private final QRCodeService qrCodeService;
 
     List<CouponDTO> getAllBusinessCoupons(Long businessId) {
         return couponRepository.findAllByBusinessId(businessId)
@@ -71,6 +75,7 @@ class CouponService {
         return couponRepository.findAllByUserId(userId)
                                .stream()
                                .map(coupon -> new CustomerCouponDTO(
+                                       coupon.getId(),
                                        coupon.getValue(),
                                        coupon.getCouponType(),
                                        coupon.getUsages(),
@@ -78,8 +83,20 @@ class CouponService {
                                        coupon.getActive(),
                                        coupon.getDescription(),
                                        coupon.getCreationDate(),
-                                       coupon.getExpirationDate()
+                                       coupon.getExpirationDate(),
+                                       coupon.getBusiness().getBusinessName()
                                ))
                                .collect(Collectors.toList());
     }
+
+    File generateQRCode(Long couponId) {
+        Optional<Coupon> couponOptional = couponRepository.findById(couponId);
+        if (!couponOptional.isPresent()) {
+            throw new ApiException("Cannot find coupon");
+        }
+        return qrCodeService.generateQRCode(couponOptional.get().getValue());
+    }
+
+
+
 }

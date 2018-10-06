@@ -1,6 +1,8 @@
 package com.vdudnyk.discountwallet.application.business;
 
 import com.vdudnyk.discountwallet.application.business.shared.*;
+import com.vdudnyk.discountwallet.application.loyaltycard.LoyaltyCardPolicy;
+import com.vdudnyk.discountwallet.application.loyaltycard.shared.UpdateLoyaltyCardPolicy;
 import com.vdudnyk.discountwallet.application.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,5 +51,17 @@ public class BusinessFacade {
 
     public List<CustomerDTO> getBusinessCustomers(Long businessId) {
         return businessService.getBusinessCustomers(businessId);
+    }
+
+    public List<BusinessEventDTO> getBusinessEvents(Long businessId) {
+        return businessService.getBusinessEvents(businessId);
+    }
+
+    public LoyaltyCardPolicy getLoyaltyCardPolicy(Long businessId) {
+        return businessService.getLoyaltyCardPolicy(businessId);
+    }
+
+    public void updateLoyaltyCardPolicy(UpdateLoyaltyCardPolicy updateLoyaltyCardPolicy) {
+        businessService.updateLoyaltyCardPolicy(updateLoyaltyCardPolicy);
     }
 }

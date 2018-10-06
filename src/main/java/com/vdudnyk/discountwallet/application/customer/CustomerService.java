@@ -5,6 +5,9 @@ import com.vdudnyk.discountwallet.application.campaign.CampaignExecutorFacade;
 import com.vdudnyk.discountwallet.application.coupon.CouponFacade;
 import com.vdudnyk.discountwallet.application.coupon.shared.CustomerCouponDTO;
 import com.vdudnyk.discountwallet.application.customer.dto.DiscoveredBusinessDTO;
+import com.vdudnyk.discountwallet.application.event.EventFactory;
+import com.vdudnyk.discountwallet.application.event.EventSender;
+import com.vdudnyk.discountwallet.application.event.payload.UserSubscribedToBusinessEventPayload;
 import com.vdudnyk.discountwallet.application.user.User;
 import com.vdudnyk.discountwallet.application.user.UserFacade;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ public class CustomerService {
     private final BusinessFacade businessFacade;
     private final CampaignExecutorFacade campaignExecutorFacade;
     private final CouponFacade couponFacade;
+    private final EventSender eventSender;
 
     void subscribeUserToBusiness(Long businessId) {
         User authenticatedUser = userFacade.getAuthenticatedUser();
@@ -30,7 +34,12 @@ public class CustomerService {
         businessFacade.addCustomer(authenticatedUser, businessId);
         //welcome codes generate here
 
-        campaignExecutorFacade.executeWelcomeCampaign(businessId, authenticatedUser.getId());
+        eventSender.send(EventFactory.createUserSubscribedToBusinessEvent(
+                authenticatedUser.getId(),
+                businessId,
+                new UserSubscribedToBusinessEventPayload(
+                        authenticatedUser.getEmail(),
+                        authenticatedUser.getPhoneNumber())));
     }
 
     List<DiscoveredBusinessDTO> discoverBusinesses() {

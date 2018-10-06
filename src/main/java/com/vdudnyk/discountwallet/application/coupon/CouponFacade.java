@@ -6,6 +6,7 @@ import com.vdudnyk.discountwallet.application.coupon.shared.CustomerCouponDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
 
 @Service
@@ -27,5 +28,9 @@ public class CouponFacade {
 
     public List<CustomerCouponDTO> getCustomerCoupons(Long userId) {
         return couponService.getCustomerCoupons(userId);
+    }
+
+    public File getQRCode(Long couponId) {
+        return couponService.generateQRCode(couponId);
     }
 }

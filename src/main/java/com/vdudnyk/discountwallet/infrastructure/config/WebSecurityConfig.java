@@ -88,7 +88,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                              "/users/authentications",
                              "/users",
                              "/error",
-                             "/business/*/codes/*/validate")
+                             "/validate/**",
+                             "/qrCode")
                 .permitAll()
                 .anyRequest()
                 .authenticated();

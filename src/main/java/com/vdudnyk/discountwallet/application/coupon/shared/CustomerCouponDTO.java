@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Value
 public class CustomerCouponDTO {
+    private Long id;
     private String value;
     private CouponType couponType;
     private Long usages;
@@ -15,4 +16,5 @@ public class CustomerCouponDTO {
     private String description;
     private LocalDateTime creationDate;
     private LocalDateTime expirationDate;
+    private String businessName;
 }

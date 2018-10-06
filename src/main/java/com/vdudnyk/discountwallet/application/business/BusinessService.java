@@ -1,6 +1,12 @@
 package com.vdudnyk.discountwallet.application.business;
 
 import com.vdudnyk.discountwallet.application.business.shared.*;
+import com.vdudnyk.discountwallet.application.event.Event;
+import com.vdudnyk.discountwallet.application.event.EventFacade;
+import com.vdudnyk.discountwallet.application.loyaltycard.LoyaltyCardPolicy;
+import com.vdudnyk.discountwallet.application.loyaltycard.LoyaltyCardPolicyFacade;
+import com.vdudnyk.discountwallet.application.loyaltycard.shared.CreateLoyaltyCardPolicyCommand;
+import com.vdudnyk.discountwallet.application.loyaltycard.shared.UpdateLoyaltyCardPolicy;
 import com.vdudnyk.discountwallet.application.shared.ApiException;
 import com.vdudnyk.discountwallet.application.user.User;
 import com.vdudnyk.discountwallet.application.user.UserFacade;
@@ -16,6 +22,8 @@ import java.util.stream.Collectors;
 public class BusinessService {
     private final BusinessRepository businessRepository;
     private final UserFacade userFacade;
+    private final EventFacade eventFacade;
+    private final LoyaltyCardPolicyFacade loyaltyCardPolicyFacade;
 
     List<Business> getUserBusinesses() {
         return businessRepository.findAllByAdministrator(userFacade.getAuthenticatedUser());
@@ -35,7 +43,13 @@ public class BusinessService {
         business.setAddress(setUpBusinessRequest.getAddress());
         business.setCity(setUpBusinessRequest.getCity());
         business.setZipCode(setUpBusinessRequest.getZipCode());
-        businessRepository.save(business);
+        Business savedBusiness = businessRepository.save(business);
+
+        loyaltyCardPolicyFacade.createLoyaltyCardPolicy(new CreateLoyaltyCardPolicyCommand(
+                savedBusiness.getId(),
+                5L,
+                "Give free coffee for that guy"
+        ));
     }
 
     void updateBusiness(UpdateBusinessCommand updateBusinessRequest) {
@@ -103,6 +117,21 @@ public class BusinessService {
                 .collect(Collectors.toList());
     }
 
+    List<BusinessEventDTO> getBusinessEvents(Long businessId) {
+        Business business = getBusinessById(businessId);
+        validateBusinessOwnership(business);
+        List<Event> businessEvents = eventFacade.findByBusinessId(businessId);
+        return businessEvents.stream()
+                             .map(event -> new BusinessEventDTO(
+                                     event.getCreatedAt(),
+                                     event.getEventType(),
+                                     event.getDescription()
+                                          .replace("${userId}", userFacade.getUserById(event.getUserId()).getEmail())
+                                          .replace("${businessId}", getBusinessById(event.getBusinessId()).getBusinessName())
+                             ))
+                             .collect(Collectors.toList());
+    }
+
     private Business getBusinessById(Long businessId) {
         return businessRepository.findById(businessId).orElseThrow(() -> new ApiException("Business not found"));
     }
@@ -112,5 +141,17 @@ public class BusinessService {
         if (!business.getAdministrator().contains(authenticatedUser)) {
             throw new ApiException("Permission denied");
         }
+    }
+
+    LoyaltyCardPolicy getLoyaltyCardPolicy(Long businessId) {
+        Business businessById = getBusinessById(businessId);
+        validateBusinessOwnership(businessById);
+        return loyaltyCardPolicyFacade.getLoyaltyCardPolicy(businessId);
+    }
+
+    public void updateLoyaltyCardPolicy(UpdateLoyaltyCardPolicy updateLoyaltyCardPolicy) {
+        Business businessById = getBusinessById(updateLoyaltyCardPolicy.getBusinessId());
+        validateBusinessOwnership(businessById);
+        loyaltyCardPolicyFacade.updateLoyaltyCardPolicy(updateLoyaltyCardPolicy);
     }
 }

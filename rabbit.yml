@@ -1,0 +1,9 @@
+localrabbit:
+  image: rabbitmq:3.5.3-management
+  environment:
+    RABBITMQ_DEFAULT_USER: "rabbitmq"
+    RABBITMQ_DEFAULT_PASS: "password"
+  ports:
+  - "15672:15672"  # guest:guest
+  - "5672:5672"   # amqp port
+  - "25672:25672" # cluster port

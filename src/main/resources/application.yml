@@ -14,7 +14,20 @@ spring:
   security:
     user:
       password: password
-
+  rabbitmq:
+    username: "rabbitmq"
+    password: "password"
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: discount-wallet
+          contentType: application/json
+          group: discount-wallet-group
+        output:
+          destination: discount-wallet
+          contentType: application/json
+          group: discount-wallet-group
 logging:
   level:
     org.hibernate.engine.jdbc.env.internal.LobCreatorBuilderImpl: ERROR

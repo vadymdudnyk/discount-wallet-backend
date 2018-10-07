@@ -18,4 +18,6 @@ public class LoyaltyCard {
     private Long userId;
     private Long stamps;
     private Long points;
+    private Long totalStampsCollected;
+    private Long totalPointsCollects;
 }

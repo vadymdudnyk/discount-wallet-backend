@@ -64,4 +64,10 @@ public class BusinessFacade {
     public void updateLoyaltyCardPolicy(UpdateLoyaltyCardPolicy updateLoyaltyCardPolicy) {
         businessService.updateLoyaltyCardPolicy(updateLoyaltyCardPolicy);
     }
+
+    public void activateLoyaltyCardStamp(Long businessId,
+                                         Long loyaltyCardId,
+                                         ActivateLoyaltyCardStampsRequest activateLoyaltyCardStampsRequest) {
+        businessService.activateLoyaltyCardStamp(businessId, loyaltyCardId, activateLoyaltyCardStampsRequest);
+    }
 }

@@ -1,24 +1,17 @@
-package com.vdudnyk.discountwallet.application.loyaltycard;
+package com.vdudnyk.discountwallet.application.loyaltycard.shared;
 
-import lombok.Data;
+import lombok.Value;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.time.LocalDateTime;
 
-@Data
-@Entity
-public class LoyaltyCard {
-    @Id
-    @GeneratedValue
+@Value
+public class CustomerLoyaltyCardDTO {
     private Long id;
     private LocalDateTime createdDate;
     private Long businessId;
     private Long userId;
     private Long stamps;
     private Long points;
-    private Long maxStamps;
     private Long totalStampsCollected;
     private Long totalPointsCollects;
     private String activationCode;

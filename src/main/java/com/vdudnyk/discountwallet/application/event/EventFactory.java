@@ -1,6 +1,8 @@
 package com.vdudnyk.discountwallet.application.event;
 
 import com.google.gson.Gson;
+import com.vdudnyk.discountwallet.application.event.payload.MaxStampsCollectedEventPayload;
+import com.vdudnyk.discountwallet.application.event.payload.StampCollectedEventPayload;
 import com.vdudnyk.discountwallet.application.event.payload.UserDetails;
 import com.vdudnyk.discountwallet.application.event.payload.UserSubscribedToBusinessEventPayload;
 import com.vdudnyk.discountwallet.application.user.Role;
@@ -44,4 +46,28 @@ public class EventFactory {
                 .withPayloadType(userSubscribedToBusinessEventPayload.getClass());
     }
 
+    public static Event createMaxStampsCollectedEvent(Long userId, Long businessId, Long loyaltyCardId, String activationCode) {
+        return new Event()
+                .withEventType(EventType.MAX_STAMPS_COLLECTED)
+                .withDescription("User ${userId} has collected maximal amount of stamps in business ${businessId} " +
+                                 "with loyalty card ${loyaltyCardId}")
+                .withUserId(userId)
+                .withBusinessId(businessId)
+                .withLoyaltyCardId(loyaltyCardId)
+                .withPayload(gson.toJson(new MaxStampsCollectedEventPayload(activationCode)))
+                .withPayloadType(MaxStampsCollectedEventPayload.class);
+    }
+
+    public static Event createStampCollectedEvent(Long userId, Long businessId, Long loyaltyCardId, Long stamps) {
+        return new Event()
+                .withEventType(EventType.STAMP_COLLECTED)
+                .withDescription("User ${userId} has collected stamp with loyalty card ${loyaltyCardId}" +
+                                 "in business ${businessId}")
+                .withUserId(userId)
+                .withBusinessId(businessId)
+                .withLoyaltyCardId(loyaltyCardId)
+                .withPayload(gson.toJson(new StampCollectedEventPayload(stamps)))
+                .withPayloadType(StampCollectedEventPayload.class);
+
+    }
 }

@@ -1,13 +1,14 @@
 package com.vdudnyk.discountwallet.application.customer;
 
 import com.vdudnyk.discountwallet.application.business.BusinessFacade;
-import com.vdudnyk.discountwallet.application.campaign.CampaignExecutorFacade;
 import com.vdudnyk.discountwallet.application.coupon.CouponFacade;
 import com.vdudnyk.discountwallet.application.coupon.shared.CustomerCouponDTO;
 import com.vdudnyk.discountwallet.application.customer.dto.DiscoveredBusinessDTO;
 import com.vdudnyk.discountwallet.application.event.EventFactory;
 import com.vdudnyk.discountwallet.application.event.EventSender;
 import com.vdudnyk.discountwallet.application.event.payload.UserSubscribedToBusinessEventPayload;
+import com.vdudnyk.discountwallet.application.loyaltycard.LoyaltyCardFacade;
+import com.vdudnyk.discountwallet.application.loyaltycard.shared.CustomerLoyaltyCardDTO;
 import com.vdudnyk.discountwallet.application.user.User;
 import com.vdudnyk.discountwallet.application.user.UserFacade;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,8 @@ public class CustomerService {
 
     private final UserFacade userFacade;
     private final BusinessFacade businessFacade;
-    private final CampaignExecutorFacade campaignExecutorFacade;
     private final CouponFacade couponFacade;
+    private final LoyaltyCardFacade loyaltyCardFacade;
     private final EventSender eventSender;
 
     void subscribeUserToBusiness(Long businessId) {
@@ -60,5 +61,10 @@ public class CustomerService {
     List<CustomerCouponDTO> getCustomerCoupons() {
         User authenticatedUser = userFacade.getAuthenticatedUser();
         return couponFacade.getCustomerCoupons(authenticatedUser.getId());
+    }
+
+    List<CustomerLoyaltyCardDTO> getCustomerLoyaltyCards() {
+        User authenticatedUser = userFacade.getAuthenticatedUser();
+        return loyaltyCardFacade.getUsersLoyaltyCards(authenticatedUser.getId());
     }
 }

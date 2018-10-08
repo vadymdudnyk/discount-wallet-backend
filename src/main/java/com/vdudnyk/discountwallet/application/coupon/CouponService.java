@@ -6,6 +6,7 @@ import com.vdudnyk.discountwallet.application.coupon.shared.CouponDTO;
 import com.vdudnyk.discountwallet.application.coupon.shared.CreateCouponRequest;
 import com.vdudnyk.discountwallet.application.coupon.shared.CustomerCouponDTO;
 import com.vdudnyk.discountwallet.application.shared.ApiException;
+import com.vdudnyk.discountwallet.application.shared.CodeGenerator;
 import com.vdudnyk.discountwallet.application.user.UserFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 class CouponService {
     private final CouponRepository couponRepository;
-    private final CodeGenerator codeGenerator;
     private final BusinessFacade businessFacade;
     private final UserFacade userFacade;
     private final QRCodeService qrCodeService;
@@ -67,7 +67,7 @@ class CouponService {
         coupon.setUsages(0L);
         coupon.setUser(userFacade.getUserById(createCouponRequest.getUserId()));
         coupon.setCampaignId(createCouponRequest.getCampaignId());
-        coupon.setValue(codeGenerator.generateSimpleCode());
+        coupon.setValue(CodeGenerator.generateSimpleCode());
         return couponRepository.save(coupon);
     }
 

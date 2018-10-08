@@ -71,4 +71,12 @@ public class BusinessController {
         businessFacade.updateLoyaltyCardPolicy(updateLoyaltyCardPolicy);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("{businessId}/loyaltyCards/{loyaltyCardId}/activations")
+    ResponseEntity<Void> activateLoyaltyCardStamp(@PathVariable Long businessId,
+                                                  @PathVariable Long loyaltyCardId,
+                                                  @RequestBody ActivateLoyaltyCardStampsRequest activateLoyaltyCardStampsRequest) {
+        businessFacade.activateLoyaltyCardStamp(businessId, loyaltyCardId, activateLoyaltyCardStampsRequest);
+        return ResponseEntity.ok().build();
+    }
 }

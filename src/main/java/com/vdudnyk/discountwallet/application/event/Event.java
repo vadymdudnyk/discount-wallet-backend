@@ -25,6 +25,7 @@ public class Event implements Serializable {
     private String uuid;
     private Long userId;
     private Long couponId;
+    private Long loyaltyCardId;
     private Long businessId;
     private Long campaignId;
     private Long notificationId;

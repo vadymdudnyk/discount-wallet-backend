@@ -3,6 +3,7 @@ package com.vdudnyk.discountwallet.application.business;
 import com.vdudnyk.discountwallet.application.business.shared.*;
 import com.vdudnyk.discountwallet.application.event.Event;
 import com.vdudnyk.discountwallet.application.event.EventFacade;
+import com.vdudnyk.discountwallet.application.loyaltycard.LoyaltyCardFacade;
 import com.vdudnyk.discountwallet.application.loyaltycard.LoyaltyCardPolicy;
 import com.vdudnyk.discountwallet.application.loyaltycard.LoyaltyCardPolicyFacade;
 import com.vdudnyk.discountwallet.application.loyaltycard.shared.CreateLoyaltyCardPolicyCommand;
@@ -24,6 +25,7 @@ public class BusinessService {
     private final UserFacade userFacade;
     private final EventFacade eventFacade;
     private final LoyaltyCardPolicyFacade loyaltyCardPolicyFacade;
+    private final LoyaltyCardFacade loyaltyCardFacade;
 
     List<Business> getUserBusinesses() {
         return businessRepository.findAllByAdministrator(userFacade.getAuthenticatedUser());
@@ -149,9 +151,16 @@ public class BusinessService {
         return loyaltyCardPolicyFacade.getLoyaltyCardPolicy(businessId);
     }
 
-    public void updateLoyaltyCardPolicy(UpdateLoyaltyCardPolicy updateLoyaltyCardPolicy) {
+    void updateLoyaltyCardPolicy(UpdateLoyaltyCardPolicy updateLoyaltyCardPolicy) {
         Business businessById = getBusinessById(updateLoyaltyCardPolicy.getBusinessId());
         validateBusinessOwnership(businessById);
         loyaltyCardPolicyFacade.updateLoyaltyCardPolicy(updateLoyaltyCardPolicy);
+    }
+
+    void activateLoyaltyCardStamp(Long businessId, Long loyaltyCardId, ActivateLoyaltyCardStampsRequest activateLoyaltyCardStampsRequest) {
+        Business businessById = getBusinessById(businessId);
+        validateBusinessOwnership(businessById);
+
+        loyaltyCardFacade.activateStamp(businessById.getId(), loyaltyCardId, activateLoyaltyCardStampsRequest.getActivationCode());
     }
 }

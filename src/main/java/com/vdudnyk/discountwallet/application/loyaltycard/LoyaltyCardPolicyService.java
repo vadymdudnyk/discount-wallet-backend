@@ -24,6 +24,7 @@ public class LoyaltyCardPolicyService {
         loyaltyCardPolicyRepository.findById(updateLoyaltyCardPolicy.getId())
                                    .ifPresent(loyaltyCardPolicy -> {
                                        loyaltyCardPolicy.setMaxStamps(updateLoyaltyCardPolicy.getMaxStamps());
+                                       loyaltyCardPolicy.setMaxStampsCollectedText(updateLoyaltyCardPolicy.getMaxStampsCollectedText());
                                        loyaltyCardPolicyRepository.save(loyaltyCardPolicy);
                                    });
     }

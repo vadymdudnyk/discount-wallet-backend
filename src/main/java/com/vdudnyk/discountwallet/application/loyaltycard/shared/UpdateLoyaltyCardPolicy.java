@@ -7,5 +7,5 @@ public class UpdateLoyaltyCardPolicy {
     private Long id;
     private Long businessId;
     private Long maxStamps;
-    private String whatToDoIfMaxStampsCollected;
+    private String maxStampsCollectedText;
 }

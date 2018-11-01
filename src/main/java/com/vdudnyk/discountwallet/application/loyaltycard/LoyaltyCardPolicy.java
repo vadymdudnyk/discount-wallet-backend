@@ -17,4 +17,5 @@ public class LoyaltyCardPolicy {
 
     private Long businessId;
     private Long maxStamps;
+    private String maxStampsCollectedText;
 }
